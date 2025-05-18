@@ -18,13 +18,15 @@
 
 header {
   height:30rem;
-  width: 75rem;
+  width: 93rem;
   border-bottom-right-radius: 36rem;
+  border-bottom-left-radius: 36rem;
   display: flex;
   flex-direction: column;
   justify-content: end;
-  align-items: start;
+  align-items: center;
   padding: 3rem;
+  margin: 0 auto;
   background: var(--vt-c-black-soft);
 }
 
