@@ -22,7 +22,7 @@ function updateGridTemplate(rowsToAdd){
 async function loadRows(rowsToLoad){
   isLoading.value = true;
   for (let i = 0; i < rowsToLoad; i++) {
-    let data = await searchPhotos('homosexual women', page, cols)
+    let data = await searchPhotos('homosexual kiss', page, cols)
     for (let d of data){
       images.value.push(`background-image: url("${d.src.large}");`);
     }
