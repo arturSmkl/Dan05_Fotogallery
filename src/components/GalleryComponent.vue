@@ -1,14 +1,18 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { searchPhotos } from "@/servicies/pexels.js";
+import FullImage from "@/components/FullImage.vue";
 
-const images = ref([])
+const imagesUrl = ref([])
+const imagesBgStyle = ref([])
 const isLoading = ref(false);
 let cols = 4;
 let rows = 0;
 let page = 1;
-
 const gridTemplate = ref("");
+
+const overlay = ref(false);
+const currentImageIdx = ref(0);
 
 function updateGridTemplate(rowsToAdd){
   rows += rowsToAdd;
@@ -22,15 +26,21 @@ function updateGridTemplate(rowsToAdd){
 async function loadRows(rowsToLoad){
   isLoading.value = true;
   for (let i = 0; i < rowsToLoad; i++) {
-    let data = await searchPhotos('homosexual kiss', page, cols)
+    let data = await searchPhotos('bikini', page, cols)
     for (let d of data){
-      images.value.push(`background-image: url("${d.src.large}");`);
+      imagesUrl.value.push(d.src.original);
+      imagesBgStyle.value.push(`background-image: url("${d.src.large}");`);
     }
     page++;
   }
   isLoading.value = false;
 }
 
+function showOverlay(imageIdx) {
+  overlay.value = true;
+  currentImageIdx.value = imageIdx;
+
+}
 
 function handleScroll() {
   const bottomReached = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
@@ -53,8 +63,9 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <FullImage v-if=overlay :images-url=imagesUrl :current-image-idx=currentImageIdx />
   <div class="container" :style=gridTemplate>
-    <div class="item" v-for="(i, idx) in images" :key="idx" :style=i ></div>
+    <button class="item" v-for="(i, idx) in imagesBgStyle" :key="idx" :style=i  @click="showOverlay(idx)" />
   </div>
 </template>
 
@@ -66,12 +77,19 @@ onUnmounted(() => {
     justify-items: center;
   }
 
-  .item {
+  button {
     width: 95%;
     aspect-ratio: 1/1;
     background-size: cover;
     background-position: center;
     border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+  }
+
+  button:hover {
+    transform: scale(1.05);
   }
 
 </style>

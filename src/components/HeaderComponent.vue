@@ -5,11 +5,11 @@
 <template>
 <header>
   <img src="../assets/images/heart.png" alt="heart">
-  <h1 class="rainbow-text">
-    LOVE IS LOVE
+  <h1 class="grad-text">
+    HOT BABES
   </h1>
   <h2>
-    Discover the beauty of romance
+    Discover the beauty of women
   </h2>
 </header>
 </template>
