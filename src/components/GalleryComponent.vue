@@ -2,9 +2,9 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { searchPhotos } from "@/servicies/pexels.js";
 import FullImage from "@/components/FullImage.vue";
+import ImageDesc from "@/components/ImageDesc.vue";
 
-const imagesUrl = ref([])
-const imagesBgStyle = ref([])
+const imagesObj = ref([])
 const isLoading = ref(false);
 let cols = 4;
 let rows = 0;
@@ -13,6 +13,10 @@ const gridTemplate = ref("");
 
 const overlay = ref(false);
 const currentImageIdx = ref(0);
+
+const descVisible = ref(false);
+const descText = ref("");
+const descStyle = ref("");
 
 function updateGridTemplate(rowsToAdd){
   rows += rowsToAdd;
@@ -28,8 +32,13 @@ async function loadRows(rowsToLoad){
   for (let i = 0; i < rowsToLoad; i++) {
     let data = await searchPhotos('bikini', page, cols)
     for (let d of data){
-      imagesUrl.value.push(d.src.original);
-      imagesBgStyle.value.push(`background-image: url("${d.src.large}");`);
+      imagesObj.value.push({
+        src: {
+          original: d.src.original,
+          bgStyle: `background-image: url("${d.src.large}");`,
+        },
+        photographer: d.photographer,
+      });
     }
     page++;
   }
@@ -50,6 +59,22 @@ function handleScroll() {
   }
 }
 
+function showDesc(event, name) {
+  descText.value = name;
+  descStyle.value = `top: ${event.clientY + 15}px; left: ${event.clientX + 15}px;`;
+  descVisible.value = true;
+}
+
+function moveDesc(event) {
+  if (descVisible.value) {
+    descStyle.value = `top: ${event.clientY + 15}px; left: ${event.clientX + 15}px;`;
+  }
+}
+
+function hideDesc() {
+  descVisible.value = false;
+}
+
 onMounted(async () => {
   updateGridTemplate(4);
   await loadRows(4);
@@ -63,9 +88,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <FullImage v-if=overlay :images-url=imagesUrl :current-image-idx=currentImageIdx />
+  <FullImage v-if=overlay :images-obj=imagesObj :current-image-idx=currentImageIdx @close="overlay = false" />
+  <ImageDesc v-if=descVisible :name=descText :desc-style=descStyle />
   <div class="container" :style=gridTemplate>
-    <button class="item" v-for="(i, idx) in imagesBgStyle" :key="idx" :style=i  @click="showOverlay(idx)" />
+    <button class="item"
+            v-for="(i, idx) in imagesObj"
+            :key=idx
+            :style=i.src.bgStyle
+            @click="showOverlay(idx)"
+            @mouseenter="(e) => showDesc(e, i.photographer)"
+            @mousemove="moveDesc"
+            @mouseleave="hideDesc" />
   </div>
 </template>
 

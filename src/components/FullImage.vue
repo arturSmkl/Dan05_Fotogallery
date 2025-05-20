@@ -1,7 +1,47 @@
 <script setup>
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+
 const props = defineProps({
-  imagesUrl: Array,
+  imagesObj: Array,
   currentImageIdx: Number
+})
+
+const emit = defineEmits(["close"])
+
+const localImageIdx = ref(props.currentImageIdx)
+
+watch(() => props.currentImageIdx, (newVal) => {
+  localImageIdx.value = newVal
+});
+
+function nextImage() {
+  if (localImageIdx.value < props.imagesObj.length - 1) {
+    localImageIdx.value++
+  }
+}
+
+function prevImage() {
+  if (localImageIdx.value > 0) {
+    localImageIdx.value--
+  }
+}
+
+function handleKeydown(event) {
+  if (event.key === "ArrowRight") {
+    nextImage()
+  } else if (event.key === "ArrowLeft") {
+    prevImage()
+  } else if (event.key === "Escape") {
+    emit("close") // Optional: close overlay with ESC key
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleKeydown)
 })
 
 </script>
@@ -9,10 +49,10 @@ const props = defineProps({
 <template>
   <div class="overlay">
     <div class="container">
-      <button class="close" />
-      <button class="arrow right-arrow" />
-      <button class="arrow left-arrow" />
-      <img :src=props.imagesUrl[props.currentImageIdx] alt="hot woman" />
+      <button class="close" @click="emit('close')" />
+      <button class="arrow right-arrow" @click=nextImage() />
+      <button class="arrow left-arrow" @click=prevImage() />
+      <img :src=props.imagesObj[localImageIdx].src.original alt="hot babe" />
     </div>
   </div>
 </template>
@@ -29,12 +69,12 @@ const props = defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--vt-c-black-trans);
 }
 
 .container {
-  height: 90vh;
+  height: 95vh;
   aspect-ratio: 1/1;
-  background-color: var(--vt-c-black-mute);
   border-radius: 1rem;
   display: grid;
   grid-template-columns: 5% 90% 5%;
@@ -50,6 +90,11 @@ button {
   cursor: pointer;
   width: 80%;
   aspect-ratio: 1/1;
+  transition: all 0.1s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.25);
 }
 
 .arrow {
@@ -77,6 +122,12 @@ img {
   height: auto;
   object-fit: contain;
   border-radius: 1rem;
+}
+
+@media (orientation: portrait) {
+  .container {
+    height: 95vw;
+  }
 }
 
 </style>

@@ -10,7 +10,7 @@ import GalleryComponent from "@/components/GalleryComponent.vue";
  <GalleryComponent />
 </main>
 <footer>
-  @ 2025 Artur Smýkal
+  @ 2025 Artur Smýkal - Specially made for Daniel Kopecký
 </footer>
 </template>
 
@@ -18,6 +18,7 @@ import GalleryComponent from "@/components/GalleryComponent.vue";
 main {
   width: 1400px;
   margin: 4rem auto;
+  min-height: 100vh;
 }
 
 footer {
@@ -30,4 +31,16 @@ footer {
   position: sticky;
   bottom: 0;
 }
+
+@media (max-width: 1500px) {
+  main {
+    width: 90%;
+  }
+
+  footer {
+    font-size: 0.8rem;
+  }
+
+}
+
 </style>
