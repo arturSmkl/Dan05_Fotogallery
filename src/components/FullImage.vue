@@ -6,9 +6,9 @@ const props = defineProps({
   currentImageIdx: Number
 })
 
-const emit = defineEmits(["close"])
+const emit = defineEmits(["close"])  // Emit event to close the overlay (turning the overlay boolean to false in the parent component)
 
-const localImageIdx = ref(props.currentImageIdx)
+const localImageIdx = ref(props.currentImageIdx) // Local index of the image to be shown in the overlay, adjusted by the user clicking the arrows
 
 watch(() => props.currentImageIdx, (newVal) => {
   localImageIdx.value = newVal

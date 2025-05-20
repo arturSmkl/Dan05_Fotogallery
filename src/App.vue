@@ -1,5 +1,4 @@
 <script setup>
-
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import GalleryComponent from "@/components/GalleryComponent.vue";
 </script>
