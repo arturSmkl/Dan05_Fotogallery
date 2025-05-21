@@ -9,7 +9,7 @@ import GalleryComponent from "@/components/GalleryComponent.vue";
  <GalleryComponent />
 </main>
 <footer>
-  @ 2025 Artur Smýkal - Specially made for Daniel Kopecký
+  @ 2025 Artur Smýkal - Specially made for Daniel Sigma Kopecký
 </footer>
 </template>
 
